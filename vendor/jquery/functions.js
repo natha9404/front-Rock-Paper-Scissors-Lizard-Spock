@@ -18,6 +18,8 @@ var app = new Vue({
     methods: {
 
         turn: function (option) {
+            this.winner = 'A moment, Loading...'
+
             var proxyurl = "https://cors-anywhere.herokuapp.com/";
 
             var url = proxyurl+'https://natha9404.pythonanywhere.com/gameLogic/play_turn/';
