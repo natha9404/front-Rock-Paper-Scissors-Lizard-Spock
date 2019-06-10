@@ -18,15 +18,47 @@ var app = new Vue({
     methods: {
 
         turn: function (option) {
+            this.winner = 'A moment, Loading...'
 
-            this.pointsComputer +=1;
-            this.iconComputer = 'icon-option far fa-hand-lizard'
-            this.nameIconComputer = 'Lizard'
-            this.winner = 'Computer'
+            var proxyurl = "https://cors-anywhere.herokuapp.com/";
+
+            var url = proxyurl+'https://natha9404.pythonanywhere.com/gameLogic/play_turn/';
+            var data = {
+                player: option
+            };
+
+            fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => res.json())
+            .catch(error => console.error('Error:', error))
+            .then(data => {
+                var info = data['data']
+                this.nameIconComputer = info['iconComputer']
+                if(info['tied'] == true){
+                    this.winner = 'The game was tied'
+                }
+                else{
+                    this.winner = info['winner']
+                    this.iconComputer = 'icon-option far fa-hand-'+info['iconComputer']
+                }
+
+                if (this.winner == 'Computer'){
+                    this.pointsComputer +=1
+                }else if (this.winner == 'Player'){
+                    this.pointsPlayer += 1
+                }
+            });
+            
         },
+
         endGame: function (option) {
 
             this.pointsComputer = 0;
+            this.pointsPlayer = 0;
             this.iconComputer = 'icon-option fas fa-question'
             this.nameIconComputer = 'Question'
             this.winner = ''
